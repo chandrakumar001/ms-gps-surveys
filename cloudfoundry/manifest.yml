@@ -1,0 +1,14 @@
+---
+applications:
+  - name: ms-gps-surveys
+    memory: ((memory))
+    disk_quota: ((diskquota))
+    instances: ((instances))
+    buildpacks:
+      - java_buildpack
+    env:
+      JBP_CONFIG_OPEN_JDK_JRE: ((jbpConfig))
+    random-route: false
+    path: ../target/ms-gps-surveys.jar
+#    services:
+#      - another-service-bind

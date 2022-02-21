@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-gps-surveys
+  labels:
+    purpose: ms-gps-surveys
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ms-gps-surveys
+  template:
+    metadata:
+      name: ms-gps-surveys
+      labels:
+        app: ms-gps-surveys
+    spec:
+      imagePullSecrets:
+        - name: repo-treescale-secret
+      containers:
+      - name: ms-gps-surveys
+        image: repo.treescale.com/chandrakumar001/ms-ms-gps-surveys:latest
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 8080
+            protocol: TCP
+        resources:
+          requests:
+            cpu: 100m
+            memory: 500m

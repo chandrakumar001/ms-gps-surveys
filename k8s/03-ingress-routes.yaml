@@ -1,0 +1,30 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ms-gps-surveys-ingress-route
+  namespace: default
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  #Gerneral Purpose system
+  - match: Host(`api.apps.chandran-edu.com`) && PathPrefix(`/`)
+    kind: Rule
+    services:
+    - name: ms-gps-surveys-svc
+      port: 80     
+    middlewares:
+    - name: ms-gps-surveys-middleware
+  tls:
+    certResolver: myresolver    
+    
+---    
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: ms-gps-surveys-middleware
+spec:
+  stripPrefix:
+    prefixes:
+      - /

@@ -1,0 +1,219 @@
+openapi: 3.0.0
+info:
+  version: 0.0.1
+  title: surveys
+paths:
+
+
+  "/v1/surveys":
+    x-swagger-router-controller: surveys
+    post:
+      summary: create a new survey
+      tags:
+        - Survey API
+      operationId: createSurvey
+      requestBody:
+        $ref: "#/components/requestBodies/survey-request"
+      responses:
+        "201":
+          description: survey created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/survey"
+        "400":
+          description: error, tbd.
+  "/v1/surveys/{survey-id}":
+    x-swagger-router-controller: surveys
+    get:
+      summary: get surveys by id
+      tags:
+        - Survey API
+      operationId: getSurveyById
+      parameters:
+        - name: survey-id
+          in: path
+          required: true
+          description: ID of the Survey
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/survey-questions-response"
+        "400":
+          description: The 'surveyId' is invalid
+        "404":
+          description: The 'surveyId' is not found
+    put:
+      summary: update an survey by id
+      tags:
+        - Survey API
+      operationId: updateSurveyById
+      parameters:
+        - name: survey-id
+          in: path
+          required: true
+          description: ID of the Survey
+          schema:
+            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/survey-request"
+
+      responses:
+        "202":
+          description: survey updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/survey"
+        "400":
+          description: The 'surveyId' is invalid
+        "404":
+          description: The 'surveyId' is not found
+    delete:
+      summary: delete surveys by id
+      tags:
+        - Survey API
+      operationId: deleteSurveyById
+      parameters:
+        - name: survey-id
+          in: path
+          required: true
+          description: ID of the Survey
+          schema:
+            type: string
+      responses:
+        "400":
+          description: The 'surveyId' is invalid
+        "404":
+          description: The 'surveyId' is not found
+  "/v1/surveys/{survey-id}/response-ready":
+    x-swagger-router-controller: surveys
+    get:
+      summary: get surveys by id
+      tags:
+        - Survey API
+      operationId: getSurveyreadyById
+      parameters:
+        - name: survey-id
+          in: path
+          required: true
+          description: ID of the Survey
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/survey"
+        "400":
+          description: The 'surveyId' is invalid
+        "404":
+          description: The 'surveyId' is not found
+
+
+  /swagger:
+    x-swagger-pipe: swagger_raw
+components:
+  requestBodies:
+    survey-request:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/survey-request"
+      description: new survey
+  schemas:
+    survey-request:
+      required: #null
+        - title
+        - description
+      type: object
+      properties:
+        title:
+          type: string
+          example: 'some title'
+          minLength: 1  #length: empty
+        description:
+          type: string
+          example: 'some description'
+          minLength: 1  #length: empty
+        status:
+          $ref: "#/components/schemas/survey-status"
+    survey-status:
+      type: string
+      example:
+        ACTIVE - ACTIVE
+        INACTIVE - INACTIVE
+
+    survey-questions-response:
+      type: object
+      properties:
+        survey:
+          $ref: "#/components/schemas/survey"
+        questionCount:
+          type: integer
+          example: 15
+        questions:
+          type: array
+          items:
+            $ref: "#/components/schemas/survey-question"
+    survey:
+      type: object
+      properties:
+        surveyId:
+          type: string
+          example: e2a40b33-a11a-4938-8111-07acf5758977
+          format: uuid
+        data:
+          $ref: "#/components/schemas/survey-response"
+        creationDate:
+          type: string
+        updatedDate:
+          type: string
+    survey-response:
+      type: object
+      properties:
+        surveyTitle:
+          type: string
+          example: 'some title'
+        description:
+          type: string
+          example: 'some description'
+        status:
+          $ref: "#/components/schemas/survey-status"
+
+    survey-question:
+      type: object
+      properties:
+        questionId:
+          type: string
+          example: e2a40b33-a11a-4938-8111-07acf5758977
+          format: uuid
+        data:
+          $ref: "#/components/schemas/survey-question-response"
+    survey-question-response:
+      type: object
+      properties:
+        text:
+          type: string
+          example: 'some text'
+        answers:
+          type: array
+          items:
+            $ref: "#/components/schemas/survey-answer-response"
+    survey-answer-response:
+      type: object
+      properties:
+        answerId:
+          type: string
+          example: e2a40b33-a11a-4938-8111-07acf5758977
+          format: uuid
+        answerText:
+          type: string
+          example: 'some answer'

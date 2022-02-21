@@ -1,0 +1,175 @@
+openapi: 3.0.0
+info:
+  version: 0.0.1
+  title: Survey Responses
+paths:
+
+  "/v1/surveys/{survey-id}/questions":
+    x-swagger-router-controller: survey question
+    post:
+      summary: create a new question
+      tags:
+        - Survey Question API
+      operationId: createSurveysQuestion
+      parameters:
+        - name: survey-id
+          in: path
+          required: true
+          description: ID of the Survey
+          schema:
+            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/survey-responses-request"
+      responses:
+        "202":
+          description: question updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/survey-response"
+
+        "400":
+          description: error, tbd.
+  "/v1/surveys/{survey-id}/summary":
+    x-swagger-router-controller: survey question
+    get:
+      summary: create a new question
+      tags:
+        - Survey Question API
+      operationId: summarySurvey
+      parameters:
+        - name: survey-id
+          in: path
+          required: true
+          description: ID of the Survey
+          schema:
+            type: string
+      responses:
+        "202":
+          description: question updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responses-questions-response"
+        "400":
+          description: The 'questionId' is invalid
+        "404":
+          description: The 'questionId' is not found
+
+  /swagger:
+    x-swagger-pipe: swagger_raw
+
+components:
+  requestBodies:
+    survey-responses-request:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/survey-responses-request"
+      description: new question
+  schemas:
+
+    survey-response:
+      type: object
+      properties:
+        surveyResponseId:
+          type: string
+          format: uuid
+          example: e2a40b33-a11a-4938-8111-07acf5758977
+        message:
+          type: string
+          example: success
+
+    survey-responses-request:
+      type: object
+      required: #null
+        - questions
+      properties:
+        questions:
+          type: array
+          items:
+            $ref: "#/components/schemas/responses-question-request"
+          minItems: 1
+    responses-question-request:
+      type: object
+      properties:
+        questionId:
+          type: string
+          example: e2a40b33-a11a-4938-8111-07acf5758977
+        answers:
+          type: array
+          items:
+            $ref: "#/components/schemas/responses-answer-request"
+          minItems: 1
+    responses-answer-request:
+      type: object
+      required: #null
+        - isSelectedAnswer
+        - answerId
+      properties:
+        answerId:
+          type: string
+          example: e2a40b33-a11a-4938-8111-07acf5758977
+        isSelectedAnswer:
+          type: boolean
+          example: 'false'
+
+    responses-question-response:
+      type: object
+      properties:
+        questionTitle:
+          type: string
+          example: 'some text'
+        answers:
+          type: array
+          items:
+            $ref: "#/components/schemas/responses-answer-response"
+    responses-answer-response:
+      type: object
+      properties:
+        answerId:
+          type: string
+          example: e2a40b33-a11a-4938-8111-07acf5758977
+          format: uuid
+        isSelectedAnswer:
+          type: boolean
+          example: 'false'
+        isCorrectAnswer:
+          type: boolean
+          example: 'false'
+        answerStatus:
+          type: string
+          example: 'incorrect/correct'
+        answerText:
+          type: string
+          example: 'some answer'
+    responses-question:
+      type: object
+      properties:
+        questionId:
+          type: string
+          example: e2a40b33-a11a-4938-8111-07acf5758977
+          format: uuid
+        data:
+          $ref: "#/components/schemas/responses-question-response"
+    responses-questions-response:
+      type: object
+      properties:
+        summary:
+          $ref: "#/components/schemas/question-summary"
+        questions:
+          type: array
+          items:
+            $ref: "#/components/schemas/responses-question"
+    question-summary:
+      type: object
+      properties:
+        totalCorrectAnswer:
+          type: integer
+          example: 15
+        totalIncorrectAnswer:
+          type: integer
+          example: 15
+        totalQuestion:
+          type: integer
+          example: 15

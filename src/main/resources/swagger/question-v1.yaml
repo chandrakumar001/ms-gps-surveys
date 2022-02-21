@@ -1,0 +1,199 @@
+openapi: 3.0.0
+info:
+  version: 0.0.1
+  title: questions
+paths:
+
+  "/v1/question":
+    x-swagger-router-controller: question
+    get:
+      summary: Get all questions for question.
+      operationId: getQuestions
+      tags:
+        - Question API
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/question-response"
+        "400":
+          description: tbd
+        "404":
+          description: tbd
+    post:
+      summary: create a new question
+      tags:
+        - Question API
+      operationId: createQuestion
+      requestBody:
+        $ref: "#/components/requestBodies/question-request"
+      responses:
+        "201":
+          description: question created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/question"
+        "400":
+          description: error, tbd.
+  "/v1/question/{question-id}":
+    x-swagger-router-controller: question
+    get:
+      summary: get questions by id
+      tags:
+        - Question API
+      operationId: getQuestionById
+      parameters:
+        - name: question-id
+          in: path
+          required: true
+          description: ID of the question
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/question"
+        "400":
+          description: The 'questionId' is invalid
+        "404":
+          description: The 'questionId' is not found
+    put:
+      summary: update an question by id
+      tags:
+        - Question API
+      operationId: updateQuestionById
+      parameters:
+        - name: question-id
+          in: path
+          required: true
+          description: ID of the Question
+          schema:
+            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/question-request"
+
+      responses:
+        "202":
+          description: question updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/question"
+        "400":
+          description: The 'questionId' is invalid
+        "404":
+          description: The 'questionId' is not found
+    delete:
+      summary: delete questions by id
+      tags:
+        - Question API
+      operationId: deleteQuestionById
+      parameters:
+        - name: question-id
+          in: path
+          required: true
+          description: ID of the Question
+          schema:
+            type: string
+      responses:
+        "400":
+          description: The 'questionId' is invalid
+        "404":
+          description: The 'questionId' is not found
+
+  /swagger:
+    x-swagger-pipe: swagger_raw
+
+components:
+  requestBodies:
+
+    question-request:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/question-request"
+      description: new question
+  schemas:
+
+    question-request:
+      type: object
+      required: #null
+        - text
+        - markCorrectAnswer
+        - answer
+      properties:
+        questionTitle:
+          type: string
+          example: 'some question text'
+          minLength: 1  #length: empty
+        answers:
+          type: array
+          items:
+            $ref: "#/components/schemas/answer-request"
+    answer-request:
+      type: object
+      required: #null
+        - markCorrectAnswer
+        - answer
+      properties:
+        markCorrectAnswer:
+          type: boolean
+          example: 'false'
+        answer:
+          type: string
+          example: 'some answer'
+
+
+
+    question-response:
+      type: object
+      properties:
+        questionTitle:
+          type: string
+          example: 'some text'
+        answers:
+          type: array
+          items:
+            $ref: "#/components/schemas/answer-response"
+    answer-response:
+      type: object
+      properties:
+        answerId:
+          type: string
+          example: e2a40b33-a11a-4938-8111-07acf5758977
+          format: uuid
+        isCorrectAnswer:
+          type: boolean
+          example: 'false'
+        answerText:
+          type: string
+          example: 'some answer'
+    question:
+      type: object
+      properties:
+        questionId:
+          type: string
+          example: e2a40b33-a11a-4938-8111-07acf5758977
+          format: uuid
+        data:
+          $ref: "#/components/schemas/question-response"
+        creationDate:
+          type: string
+        updatedDate:
+          type: string
+    questions-response:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 15
+        questions:
+          type: array
+          items:
+            $ref: "#/components/schemas/question"

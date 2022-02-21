@@ -1,0 +1,4 @@
+instances: 1
+memory: 900M
+diskquota: 1024M
+jbpConfig: '{ "jre": { version: 11.+ },memory_calculator: { stack_threads: 10 } }'

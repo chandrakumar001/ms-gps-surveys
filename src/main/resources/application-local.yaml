@@ -1,0 +1,17 @@
+spring:
+  jpa:
+    properties:
+      hibernate:
+        # Generate and log statistics
+        generate_statistics: true
+        # Log slow queries
+        session.events.log.LOG_QUERIES_SLOWER_THAN_MS: 3
+logging:
+  level:
+    # Generate and log statistics
+    org.hibernate.stat: DEBUG
+    # Log all SQL statements
+    org.hibernate.SQL: DEBUG
+    # Log cache operations
+    org.hibernate.cache: DEBUG
+#Reference: https://thorben-janssen.com/spring-data-jpa-logging/
